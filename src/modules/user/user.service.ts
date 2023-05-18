@@ -1,6 +1,7 @@
 import prisma from '../../utils/prisma';
-import { CreateUserInput } from './user.schema';
+import { CreateUserInput, loginInput } from './user.schema';
 import { hashPassword } from '../../utils/hash';
+import { string } from 'zod';
 
 
 export async function createUser(input: CreateUserInput) {
@@ -14,3 +15,21 @@ export async function createUser(input: CreateUserInput) {
   
     return user;
   }
+
+export async function findByEmail(email: string) {
+    return prisma.user.findUnique({
+        where:{
+            email
+        }
+    })
+}
+
+export async function findUsers(){
+    return prisma.user.findMany({
+        select:{
+            email: true,
+            name :true,
+            id:true
+        }
+    });
+}

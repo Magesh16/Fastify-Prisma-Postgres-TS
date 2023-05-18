@@ -1,7 +1,32 @@
-import fastify from "fastify";
+import fastify, { FastifyReply, FastifyRequest } from "fastify";
+// @ts-ignore
+import fjwt from 'fastify-jwt'
+// @ts-ignore
 import userRoute from './modules/user/user.route';
 import {userSchemas} from './modules/user/user.schema'
-const server = fastify();
+
+export const server = fastify();
+
+declare module "fastify"{
+    export interface FastifyInstance{
+        authenticate :any
+    }
+}
+
+server.register(fjwt, {
+    secret:'dljanjfndaijbfiabodfn2314njnj'
+});
+
+// @ts-ignore
+server.decorate("authenticate",async(req: FastifyRequest,res: FastifyReply)=>{
+    try{
+        await req.jwtVerify();
+
+    }catch(err){
+        return res.send(err);
+    }
+})
+
 
 server.get('/get', (_,res)=>{
     res.send({status: true})
